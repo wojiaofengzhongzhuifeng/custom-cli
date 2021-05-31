@@ -3,6 +3,8 @@
 const path = require('path')
 const fs = require('fs')
 const ejs = require('ejs')
+const downloadGitRepo = require('download-git-repo') // 不支持 Promise
+
 
 
 
@@ -15,16 +17,21 @@ const cwdUrl = process.cwd();
 
 console.log('cwdUrl', cwdUrl);
 
-// 从模版目录中读取文件
-fs.readdir(destUrl, (err, files) => {
-    if (err) throw err;
+// // 从模版目录中读取文件
+// fs.readdir(destUrl, (err, files) => {
+//     if (err) throw err;
+//
+//     files.forEach((file) => {
+//         // 使用 ejs 渲染对应的模版文件
+//         // renderFile（模版文件地址，传入渲染数据）
+//         ejs.renderFile(path.join(destUrl, file), {name: 'fdfdfdfdf'}).then(data => {
+//             // 生成 ejs 处理后的模版文件
+//             fs.writeFileSync(path.join(cwdUrl, file), data)
+//         })
+//     })
+// })
 
-    files.forEach((file) => {
-        // 使用 ejs 渲染对应的模版文件
-        // renderFile（模版文件地址，传入渲染数据）
-        ejs.renderFile(path.join(destUrl, file), {name: 'fdfdfdfdf'}).then(data => {
-            // 生成 ejs 处理后的模版文件
-            fs.writeFileSync(path.join(cwdUrl, file), data)
-        })
-    })
+downloadGitRepo('github:wojiaofengzhongzhuifeng/bos-vanilla#main', cwdUrl, { clone: false }, function (err) {
+    console.log(err);
+    console.log(err ? 'Error' : 'Success')
 })
