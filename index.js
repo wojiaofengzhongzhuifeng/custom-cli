@@ -54,7 +54,7 @@ program
       ],
     }).then((selectBOS)=>{
       prompt({
-        name: 'selectFrontEndFramework',
+        name: 'frontEndFramework',
         type: 'list',
         message: '选择想使用的前端框架',
         choices: [
@@ -62,12 +62,36 @@ program
           { name: 'React', value: 'React' },
           { name: 'Vanilla', value: 'Vanilla' },
         ],
-      }).then((selectFrontEndFramework)=>{
-        console.log(selectFrontEndFramework);
-        console.log(selectBOS);
+      }).then((select)=>{
+        console.log(selectBOS);   // { selectBOS: [ 'BOS3D', 'BOSGEO' ] }
+        if(select.frontEndFramework === 'React'){
+          downloadGitRepo('github:wojiaofengzhongzhuifeng/bos-react#main', des, { clone: false }, function (err) {
+            const publicDirPath = path.join(cwdUrl, './public');
+            fs.readdir(publicDirPath, (err, files) => {
+              if (err) throw err;
+              files.forEach((file) => {
+                if(file === 'index.html'){
+                  ejs.renderFile(path.join(publicDirPath, file), getSelectBOS(selectBOS)).then(data => {
+                    // 生成 ejs 处理后的模版文件
+                    fs.writeFileSync(path.join(publicDirPath, file) , data)
+                  })
+                }
+              })
+            })
+          })
+        }
       });
     });
 
   });
 
 program.parse();
+
+// { selectBOS: [ 'BOS3D', 'BOSGEO' ] } => {'BOS3D': true, 'BOSGEO': true}
+function getSelectBOS(data){
+  let result = {};
+  data.selectBOS.map((string)=>{
+    result[string] = true
+  });
+  return result
+}
