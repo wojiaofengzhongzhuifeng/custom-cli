@@ -73,6 +73,9 @@ program
                 if(file === 'index.html'){
                   ejs.renderFile(path.join(publicDirPath, file), getSelectBOS(selectBOS)).then(data => {
                     // 生成 ejs 处理后的模版文件
+                    // 这样是可以的
+                    // cd ~/Desktop/test/test-test-X
+                    // node ~/Desktop/test/test-ejs/index.js
                     fs.writeFileSync(path.join(publicDirPath, file) , data)
                   })
                 }
