@@ -5,6 +5,8 @@ const fs = require('fs')
 const ejs = require('ejs')
 const downloadGitRepo = require('download-git-repo') // 不支持 Promise
 const { program } = require('commander');
+const inquirer = require('inquirer');
+var prompt = inquirer.createPromptModule();
 
 
 
@@ -41,7 +43,31 @@ program
   .command('create [destination]')
   .description('创建一个模板代码')
   .action((destination) => {
-      console.log(path.join(cwdUrl, destination));
+    let des = path.join(cwdUrl, destination)
+    prompt({
+      name: 'selectBOS',
+      type: 'checkbox',
+      message: '选择想使用的 BOS 产品(可多选)',
+      choices: [
+        { name: 'BOS3D', value: 'BOS3D' },
+        { name: 'BOSGEO', value: 'BOSGEO' },
+      ],
+    }).then((selectBOS)=>{
+      prompt({
+        name: 'selectFrontEndFramework',
+        type: 'list',
+        message: '选择想使用的前端框架',
+        choices: [
+          { name: 'Vue', value: 'Vue' },
+          { name: 'React', value: 'React' },
+          { name: 'Vanilla', value: 'Vanilla' },
+        ],
+      }).then((selectFrontEndFramework)=>{
+        console.log(selectFrontEndFramework);
+        console.log(selectBOS);
+      });
+    });
+
   });
 
 program.parse();
