@@ -14,6 +14,12 @@ var prompt = inquirer.createPromptModule();
 // 模版文件目录
 const destUrl = path.join(__dirname, 'templates');
 
+// 公司产品
+const BOS_PRODUCT_LIST = [
+  { name: 'BOS3D', value: 'BOS3D' },
+  { name: 'BOSGEO', value: 'BOSGEO' },
+]
+
 // 生成文件目录
 // process.cwd() 对应控制台所在目录
 const cwdUrl = process.cwd();
@@ -48,10 +54,7 @@ program
       name: 'selectBOS',
       type: 'checkbox',
       message: '选择想使用的 BOS 产品(可多选)',
-      choices: [
-        { name: 'BOS3D', value: 'BOS3D' },
-        { name: 'BOSGEO', value: 'BOSGEO' },
-      ],
+      choices: BOS_PRODUCT_LIST,
     }).then((selectBOS)=>{
       prompt({
         name: 'frontEndFramework',
@@ -86,11 +89,20 @@ program
 
 program.parse();
 
-// { selectBOS: [ 'BOS3D', 'BOSGEO' ] } => {'BOS3D': true, 'BOSGEO': true}
+// { selectBOS: [ 'BOS3D' ] } + BOS_PRODUCT_LIST => {'BOS3D': true, 'BOSGEO': false}
 function getSelectBOS(data){
+  // {'BOS3D': false, 'BOSGEO': false}
+  let allProductObj = BOS_PRODUCT_LIST.reduce((pre, next)=>{
+    pre[next.name] = false
+    return pre
+  }, {});
+
   let result = {};
   data.selectBOS.map((string)=>{
+    if(Object.keys(allProductObj).includes(string)){
+      allProductObj[string] = true
+    }
     result[string] = true
   });
-  return result
+  return allProductObj
 }
