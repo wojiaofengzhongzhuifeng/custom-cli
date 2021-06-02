@@ -7,13 +7,6 @@ const downloadGitRepo = require('download-git-repo') // 不支持 Promise
 const { program } = require('commander');
 const inquirer = require('inquirer');
 var prompt = inquirer.createPromptModule();
-
-
-
-
-// 模版文件目录
-const destUrl = path.join(__dirname, 'templates');
-
 // 公司产品
 const BOS_PRODUCT_LIST = [
   { name: 'BOS3D', value: 'BOS3D' },
@@ -21,35 +14,15 @@ const BOS_PRODUCT_LIST = [
 ]
 
 // 生成文件目录
-// process.cwd() 对应控制台所在目录
+// 执行yjhl create 命令的路径
 const cwdUrl = process.cwd();
-
-console.log('cwdUrl', cwdUrl);
-
-// // 从模版目录中读取文件
-// fs.readdir(destUrl, (err, files) => {
-//     if (err) throw err;
-//
-//     files.forEach((file) => {
-//         // 使用 ejs 渲染对应的模版文件
-//         // renderFile（模版文件地址，传入渲染数据）
-//         ejs.renderFile(path.join(destUrl, file), {name: 'fdfdfdfdf'}).then(data => {
-//             // 生成 ejs 处理后的模版文件
-//             fs.writeFileSync(path.join(cwdUrl, file), data)
-//         })
-//     })
-// })
-
-// downloadGitRepo('github:wojiaofengzhongzhuifeng/bos-vanilla#main', cwdUrl, { clone: false }, function (err) {
-//     console.log(err);
-//     console.log(err ? 'Error' : 'Success')
-// })
 
 program
   .command('create [destination]')
   .description('创建一个模板代码')
   .action((destination) => {
     let des = path.join(cwdUrl, destination)
+    console.log('des', des);
     prompt({
       name: 'selectBOS',
       type: 'checkbox',
@@ -66,10 +39,11 @@ program
           { name: 'Vanilla', value: 'Vanilla' },
         ],
       }).then((select)=>{
-        console.log(selectBOS);   // { selectBOS: [ 'BOS3D', 'BOSGEO' ] }
         if(select.frontEndFramework === 'React'){
           downloadGitRepo('github:wojiaofengzhongzhuifeng/bos-react#main', des, { clone: false }, function (err) {
+            if(err){console.log('err', err)}
             const publicDirPath = path.join(des, './public');
+            console.log('publicDirPath', publicDirPath);
             fs.readdir(publicDirPath, (err, files) => {
               if (err) throw err;
               files.forEach((file) => {
