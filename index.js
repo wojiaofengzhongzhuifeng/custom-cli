@@ -66,16 +66,12 @@ program
         console.log(selectBOS);   // { selectBOS: [ 'BOS3D', 'BOSGEO' ] }
         if(select.frontEndFramework === 'React'){
           downloadGitRepo('github:wojiaofengzhongzhuifeng/bos-react#main', des, { clone: false }, function (err) {
-            const publicDirPath = path.join(cwdUrl, './public');
+            const publicDirPath = path.join(des, './public');
             fs.readdir(publicDirPath, (err, files) => {
               if (err) throw err;
               files.forEach((file) => {
                 if(file === 'index.html'){
                   ejs.renderFile(path.join(publicDirPath, file), getSelectBOS(selectBOS)).then(data => {
-                    // 生成 ejs 处理后的模版文件
-                    // 这样是可以的
-                    // cd ~/Desktop/test/test-test-X
-                    // node ~/Desktop/test/test-ejs/index.js
                     fs.writeFileSync(path.join(publicDirPath, file) , data)
                   })
                 }
